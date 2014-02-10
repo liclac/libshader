@@ -1,23 +1,26 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <OpenGL/gl3.h>
+#include <GLFW/glfw3.h>
 #include <string>
 #include "Result.h"
 
 class Shader
 {
 public:
-	Shader(GLenum type, std::string path = "");
+	typedef GLResult<glGetShaderiv,glGetShaderInfoLog,GL_COMPILE_STATUS> CompileResult;
+	
+	explicit Shader(GLenum type, const std::string& path = "");
 	virtual ~Shader();
+	explicit operator bool() const { return obj && compileResult; }
 	
-	void loadSource(std::string path);
-	bool compile();
+	bool loadSourceFile(const std::string& path);
+	void compile();
 	
-	class CompileResult : public GLResult<glGetShaderiv,glGetShaderInfoLog,GL_COMPILE_STATUS> {};
+	CompileResult compileResult;
 	
 protected:
-	GLuint handle;
+	GLuint obj;
 };
 
 #endif

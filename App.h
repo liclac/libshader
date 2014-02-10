@@ -2,6 +2,7 @@
 #define APP_H
 
 #include <GLFW/glfw3.h>
+#include "Shader.h"
 
 class App
 {
@@ -9,13 +10,16 @@ public:
 	App();
 	virtual ~App();
 	
-	virtual int setup();
+	virtual bool setup();
 	virtual void run();
 	
 protected:
-	int setupGLFW();
+	bool setupGLFW();
+	bool setupShaders();
 	
 	GLFWwindow *window;
+	
+	Shader *vshader, *fshader;
 };
 
 #endif

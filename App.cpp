@@ -11,14 +11,12 @@ App::~App()
 	glfwTerminate();
 }
 
-int App::setup()
+bool App::setup()
 {
-	int retval;
+	if(!this->setupGLFW()) return false;
+	if(!this->setupShaders()) return false;
 	
-	if((retval = this->setupGLFW()))
-		return retval;
-	
-	return 0;
+	return true;
 }
 
 void App::run()
@@ -33,21 +31,40 @@ void App::run()
 	}
 }
 
-int App::setupGLFW()
+bool App::setupGLFW()
 {
 	if(!glfwInit())
 	{
 		std::cerr << "Couldn't initialize GLFW" << std::endl;
-		return -1;
+		return false;
 	}
 	
 	if(!(window = glfwCreateWindow(800, 600, "ShaderTool", NULL, NULL)))
 	{
 		std::cerr << "Couldn't create a window" << std::endl;
 		glfwTerminate();
-		return -1;
+		return false;
 	}
 	
 	glfwMakeContextCurrent(window);
-	return 0;
+	return true;
+}
+
+bool App::setupShaders()
+{
+	vshader = new Shader(GL_VERTEX_SHADER, "vertex.vertex");
+	if(!vshader)
+	{
+		std::cerr << "Couldn't build Vertex Shader:" << vshader->compileResult;
+		return false;
+	}
+	
+	fshader = new Shader(GL_FRAGMENT_SHADER, "fragment.fragment");
+	if(!fshader)
+	{
+		std::cerr << "Couldn't build Fragment Shader:" << fshader->compileResult;
+		return false;
+	}
+	
+	return true;
 }

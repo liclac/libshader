@@ -2,11 +2,14 @@
 #define RESULT_H
 
 #include <string>
+#include <iostream>
 
 class Result
 {
 public:
+	Result() : success(false), log("") { };
 	Result(bool success, std::string log): success(success), log(log) { };
+	explicit operator bool() const { return success; }
 	
 	bool success;
 	std::string log;
@@ -16,9 +19,11 @@ template<void(*ivfunc)(GLuint,GLenum,GLint*), void(*logfunc)(GLuint,GLsizei,GLsi
 class GLResult : public Result
 {
 public:
+	GLResult() : Result() { };
+	GLResult(bool success, std::string log): Result(success, log) { };
 	GLResult(GLuint obj)
 	{
-		ivfunc(obj, operation, &success);
+		ivfunc(obj, operation, (GLint*)&success);
 		
 		GLint logLength;
 		ivfunc(obj, GL_INFO_LOG_LENGTH, &logLength);
@@ -29,7 +34,14 @@ public:
 			delete[] buffer;
 		}
 	}
-	GLResult(bool success, std::string log): Result(success, log) { };
 };
+
+std::ostream& operator<<(std::ostream &out, Result &obj)
+{
+	if(obj)
+		return out << "Success";
+	else
+		return out << "Failure:" << std::endl << obj.log;
+}
 
 #endif

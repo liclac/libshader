@@ -5,11 +5,8 @@ int main(int argc, char **argv)
 {
 	App app;
 	
-	int status = app.setup();
-	if(status)
-		return status;
-	
-	app.run();
+	if(app.setup()) app.run();
+	else return 1;
 	
 	return 0;
 }

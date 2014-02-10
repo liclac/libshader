@@ -6,7 +6,7 @@ CXXFLAGS = $(CFLAGS) -std=c++11
 LDFLAGS = -lglfw3
 
 TARGET = shadertool
-OBJS = main.o App.o
+OBJS = main.o App.o Shader.o
 
 # -- Platform specific stuff
 ifeq ($(OS),Windows_NT)

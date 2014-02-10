@@ -1,7 +1,15 @@
 #include <iostream>
+#include "App.h"
 
 int main(int argc, char **argv)
 {
-	std::cout << "Test" << std::endl;
+	App app;
+	
+	int status = app.setup();
+	if(status)
+		return status;
+	
+	app.run();
+	
 	return 0;
 }

@@ -7,7 +7,7 @@
 class Result
 {
 public:
-	Result() : success(false), log("") { };
+	Result() : success(true), log("") { };
 	Result(bool success, std::string log): success(success), log(log) { };
 	explicit operator bool() const { return success; }
 	
@@ -31,6 +31,7 @@ public:
 		{
 			char *buffer = new char[logLength+1];
 			logfunc(obj, logLength, NULL, buffer);
+			log = buffer;
 			delete[] buffer;
 		}
 	}

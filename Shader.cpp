@@ -18,12 +18,12 @@ Shader::~Shader()
 
 bool Shader::loadSourceFile(const std::string& path)
 {
-	std::ifstream file(path);
+	std::ifstream file(path, std::ios::binary|std::ios::ate);
 	if(file)
 	{
-		file.seekg(std::ios::end);
+		// std::ios::ate makes the cursor start at the end, so no need to seek first
 		GLint length = (GLint)file.tellg();
-		file.seekg(std::ios::beg);
+		file.seekg(0);
 		
 		GLchar *buffer = new GLchar[length+1];
 		file.read(buffer, length);

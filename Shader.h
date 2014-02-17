@@ -7,6 +7,8 @@
 
 class Shader
 {
+	friend class ShaderProgram;
+	
 public:
 	typedef GLResult<glGetShaderiv,glGetShaderInfoLog,GL_COMPILE_STATUS> CompileResult;
 	

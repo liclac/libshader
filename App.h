@@ -3,6 +3,7 @@
 
 #include <GLFW/glfw3.h>
 #include "Shader.h"
+#include "ShaderProgram.h"
 
 class App
 {
@@ -20,6 +21,7 @@ protected:
 	GLFWwindow *window;
 	
 	Shader *vshader, *fshader;
+	ShaderProgram *program;
 };
 
 #endif

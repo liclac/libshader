@@ -66,5 +66,12 @@ bool App::setupShaders()
 		return false;
 	}
 	
+	program = new ShaderProgram(vshader, fshader);
+	if(!program)
+	{
+		std::cerr << "Couldn't make a Shader Program:" << program->linkResult;
+		return false;
+	}
+	
 	return true;
 }

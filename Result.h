@@ -36,6 +36,7 @@ public:
 	}
 };
 
+inline
 std::ostream& operator<<(std::ostream &out, Result &obj)
 {
 	if(obj)

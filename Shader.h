@@ -21,6 +21,8 @@ public:
 	
 	CompileResult compileResult;
 	
+	inline GLuint glHandle() { return obj; };
+	
 protected:
 	GLuint obj;
 };

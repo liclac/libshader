@@ -22,6 +22,8 @@ public:
 	LinkResult linkResult;
 	ValidateResult validateResult;
 	
+	inline GLuint glHandle() { return obj; }
+	
 protected:
 	Shader *vsh, *fsh;
 	GLuint obj;

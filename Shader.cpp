@@ -22,7 +22,7 @@ bool Shader::loadSourceFile(const std::string& path)
 	if(file)
 	{
 		file.seekg(std::ios::end);
-		GLint length = file.tellg();
+		GLint length = (GLint)file.tellg();
 		file.seekg(std::ios::beg);
 		
 		GLchar *buffer = new GLchar[length+1];

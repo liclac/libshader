@@ -10,7 +10,7 @@ ShaderProgram::ShaderProgram(Shader *vsh, Shader *fsh):
 	if(fsh) this->setFragmentShader(fsh);
 	
 	if(this->vsh && this->fsh)
-		this->link();
+		this->linkAndValidate();
 }
 
 ShaderProgram::~ShaderProgram()
@@ -32,8 +32,11 @@ void ShaderProgram::setFragmentShader(Shader *fsh)
 	if(this->fsh) glAttachShader(obj, this->fsh->obj);
 }
 
-void ShaderProgram::link()
+void ShaderProgram::linkAndValidate()
 {
 	glLinkProgram(obj);
 	linkResult = LinkResult(obj);
+	
+	glValidateProgram(obj);
+	validateResult = ValidateResult(obj);
 }

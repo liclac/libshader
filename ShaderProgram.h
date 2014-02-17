@@ -1,7 +1,7 @@
 #ifndef SHADERPROGRAM_H
 #define SHADERPROGRAM_H
 
-#include <GLFW/glfw3.h>
+#include "libshader_p.h"
 #include "Result.h"
 
 class Shader;

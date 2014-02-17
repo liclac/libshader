@@ -1,8 +1,8 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <GLFW/glfw3.h>
 #include <string>
+#include "libshader_p.h"
 #include "Result.h"
 
 class Shader

@@ -46,7 +46,7 @@ void ShaderProgram::use()
 	glUseProgram(obj);
 }
 
-GLint ShaderProgram::_uniformLocation(const char *name)
+GLint ShaderProgram::uniformLocation(const char *name)
 {
 	std::map<const GLchar*, GLint>::iterator it = uniforms.find(name);
 	if(it != uniforms.end())

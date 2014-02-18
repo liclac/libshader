@@ -74,14 +74,15 @@ public:
 		compileResult = CompileResult(obj);
 	}
 	
-	/// The result of the last compilation
-	CompileResult compileResult;
-	
 	/// Returns a handle to the underlying OpenGL object
 	inline GLuint glHandle() { return obj; };
 	
+	
+	
+	CompileResult compileResult;	///< The result of the last compilation
+	
 protected:
-	GLuint obj;			///< Handle to the underlying OpenGL Program object
+	GLuint obj;						///< Handle to the underlying OpenGL Program object
 };
 
 /// Predefined type for VSHs (a Shader with type GL_VERTEX_SHADER)

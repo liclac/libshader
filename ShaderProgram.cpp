@@ -41,6 +41,11 @@ void ShaderProgram::linkAndValidate()
 	validateResult = ValidateResult(obj);
 }
 
+void ShaderProgram::use()
+{
+	glUseProgram(obj);
+}
+
 GLint ShaderProgram::_uniformLocation(const char *name)
 {
 	std::map<const GLchar*, GLint>::iterator it = uniforms.find(name);

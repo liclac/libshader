@@ -26,6 +26,8 @@ public:
 	void setFragmentShader(Shader *fsh);
 	void linkAndValidate();
 	
+	void use();
+	
 	SHADER_SYNTHESIZE_UNIFORM_ACCESSORS(GLfloat, f)
 	SHADER_SYNTHESIZE_UNIFORM_ACCESSORS(GLint, i)
 	

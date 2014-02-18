@@ -7,7 +7,7 @@ CXXFLAGS = $(CFLAGS) -std=c++11
 ARFLAGS = rcs
 
 TARGET = libshader.a
-OBJS = Shader.o ShaderProgram.o
+OBJS = ShaderProgram.o
 
 # -- Targets
 $(TARGET): $(OBJS)

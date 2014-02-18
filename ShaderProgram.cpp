@@ -1,7 +1,7 @@
 #include "ShaderProgram.h"
 #include "Shader.h"
 
-ShaderProgram::ShaderProgram(Shader *vsh, Shader *fsh):
+ShaderProgram::ShaderProgram(VertexShader *vsh, FragmentShader *fsh):
 	vsh(0), fsh(0)
 {
 	obj = glCreateProgram();
@@ -18,14 +18,14 @@ ShaderProgram::~ShaderProgram()
 	glDeleteProgram(obj);
 }
 
-void ShaderProgram::setVertexShader(Shader *vsh)
+void ShaderProgram::setVertexShader(VertexShader *vsh)
 {
 	if(this->vsh) glDetachShader(obj, this->vsh->glHandle());
 	this->vsh = vsh;
 	if(this->vsh) glAttachShader(obj, this->vsh->glHandle());
 }
 
-void ShaderProgram::setFragmentShader(Shader *fsh)
+void ShaderProgram::setFragmentShader(FragmentShader *fsh)
 {
 	if(this->fsh) glDetachShader(obj, this->fsh->glHandle());
 	this->fsh = fsh;

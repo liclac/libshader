@@ -23,7 +23,7 @@ public:
 	 * Initializes a shader tries to source it with the file at the given path.
 	 * @param path Path of the source file to be loaded
 	 */
-	explicit Shader(const std::string& path = "")
+	Shader(const std::string& path = "")
 	{
 		obj = glCreateShader(type);
 		

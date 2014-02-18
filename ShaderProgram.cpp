@@ -20,16 +20,16 @@ ShaderProgram::~ShaderProgram()
 
 void ShaderProgram::setVertexShader(Shader *vsh)
 {
-	if(this->vsh) glDetachShader(obj, this->vsh->obj);
+	if(this->vsh) glDetachShader(obj, this->vsh->glHandle());
 	this->vsh = vsh;
-	if(this->vsh) glAttachShader(obj, this->vsh->obj);
+	if(this->vsh) glAttachShader(obj, this->vsh->glHandle());
 }
 
 void ShaderProgram::setFragmentShader(Shader *fsh)
 {
-	if(this->fsh) glDetachShader(obj, this->fsh->obj);
+	if(this->fsh) glDetachShader(obj, this->fsh->glHandle());
 	this->fsh = fsh;
-	if(this->fsh) glAttachShader(obj, this->fsh->obj);
+	if(this->fsh) glAttachShader(obj, this->fsh->glHandle());
 }
 
 void ShaderProgram::linkAndValidate()

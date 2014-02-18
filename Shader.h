@@ -12,10 +12,6 @@
  */
 class Shader
 {
-	// Allow ShaderProgram to access internals
-	// TODO: Remove this and move ShaderProgram over to use glHandle()
-	friend class ShaderProgram;
-	
 public:
 	/// The result of a Compile operation
 	typedef GLResult<glGetShaderiv,glGetShaderInfoLog,GL_COMPILE_STATUS> CompileResult;

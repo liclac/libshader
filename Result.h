@@ -7,8 +7,7 @@
 class Result
 {
 public:
-	Result() : success(true), log("") { };
-	Result(bool success, std::string log): success(success), log(log) { };
+	Result(bool success = true, std::string log = ""): success(success), log(log) { };
 	explicit operator bool() const { return success; }
 	
 	bool success;
@@ -19,8 +18,7 @@ template<void(*ivfunc)(GLuint,GLenum,GLint*), void(*logfunc)(GLuint,GLsizei,GLsi
 class GLResult : public Result
 {
 public:
-	GLResult() : Result() { };
-	GLResult(bool success, std::string log): Result(success, log) { };
+	GLResult(bool success = true, std::string log = ""): Result(success, log) { };
 	GLResult(GLuint obj)
 	{
 		ivfunc(obj, operation, (GLint*)&success);

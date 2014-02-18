@@ -40,3 +40,14 @@ void ShaderProgram::linkAndValidate()
 	glValidateProgram(obj);
 	validateResult = ValidateResult(obj);
 }
+
+GLint ShaderProgram::_uniformLocation(const char *name)
+{
+	std::map<const GLchar*, GLint>::iterator it = uniforms.find(name);
+	if(it != uniforms.end())
+		return (*it).second;
+	
+	GLint pos = glGetUniformLocation(obj, name);
+	uniforms.insert(std::pair<const GLchar*, GLint>(name, pos));
+	return pos;
+}

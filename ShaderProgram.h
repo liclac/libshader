@@ -26,12 +26,8 @@ public:
 	
 	/**
 	 * Initializes a shader program from the given Vertex and Fragment shader.
-	 * 
-	 * TODO: Make these optional
-	 * @param vsh Vertex Shader
-	 * @param fsh Fragment Shader
 	 */
-	ShaderProgram(Shader *vsh, Shader *fsh);
+	ShaderProgram(Shader *vsh = 0, Shader *fsh = 0);
 	/// Destroys the object and the underlying OpenGL Program object
 	virtual ~ShaderProgram();
 	/// Allows Shader Programs to be converted to bools based on their status

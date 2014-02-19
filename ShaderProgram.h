@@ -130,7 +130,12 @@ public:
 	
 	/**
 	 * @name Setting Uniforms
-	 * Wrapper functions around glUniform*()
+	 * Wrapper functions around glUniform*().<br />
+	 * Use the GLint variations to set int, ivec, bool and sampler* uniforms.<br />
+	 * Use the GLfloat variations to set float and vec uniforms.
+	 * 
+	 * The templated variations can set entire arrays at once, but need to know
+	 * how big the "chunks" are (eg. if it should call glUniform1fv or glUniform2fv).
 	 */
 	/// @{
 	/**
@@ -142,14 +147,6 @@ public:
 	void setUniform(const char *name, GLint v0, GLint v1) { _SUI2(i) }
 	void setUniform(const char *name, GLint v0, GLint v1, GLint v2) { _SUI3(i) }
 	void setUniform(const char *name, GLint v0, GLint v1, GLint v2, GLint v3) { _SUI4(i) }
-	/**
-	 * Sets an int[] or ivec[] uniform.
-	 * @tparam type Which type of function should be called, as in glUniform[type]iv
-	 * @param name The name of the uniform to be set
-	 * @param count The number of values
-	 * @param array The values
-	 */
-	template<int type> void setUniform(const char *name, GLsizei count, GLint *array) { _SUIV(i) }
 	
 	/**
 	 * Sets a float or vec uniform.
@@ -160,6 +157,16 @@ public:
 	void setUniform(const char *name, GLfloat v0, GLfloat v1) { _SUI2(f) }
 	void setUniform(const char *name, GLfloat v0, GLfloat v1, GLfloat v2) { _SUI3(f) }
 	void setUniform(const char *name, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) { _SUI4(f) }
+	
+	/**
+	 * Sets an int[] or ivec[] uniform.
+	 * @tparam type Which type of function should be called, as in glUniform[type]iv
+	 * @param name The name of the uniform to be set
+	 * @param count The number of values
+	 * @param array The values
+	 */
+	template<int type> void setUniform(const char *name, GLsizei count, GLint *array) { _SUIV(i) }
+	
 	/**
 	 * Sets a float[] or vec[] uniform.
 	 * @tparam type Which type of function should be called, as in glUniform[type]fv

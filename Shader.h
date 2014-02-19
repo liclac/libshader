@@ -19,6 +19,8 @@ public:
 	/// The result of a Compile operation
 	typedef GLResult<glGetShaderiv,glGetShaderInfoLog,GL_COMPILE_STATUS> CompileResult;
 	
+	
+	
 	/**
 	 * Initializes a shader tries to source it with the file at the given path.
 	 * @param path Path of the source file to be loaded
@@ -31,13 +33,21 @@ public:
 			if(this->loadSourceFile(path))
 				this->compile();
 	}
-	/// Destroys the object and the underlying OpenGL Shader object
+	
+	/**
+	 * Destroys the object and the underlying OpenGL Shader object
+	 */
 	virtual ~Shader()
 	{
 		glDeleteShader(obj);
 	}
-	/// Allows Shaders to be converted to bools based on their status
+	
+	/**
+	 * Allows Shaders to be converted to bools based on their status
+	 */
 	explicit operator bool() const { return obj && compileResult; }
+	
+	
 	
 	/**
 	 * Loads the given file as shader source
@@ -67,12 +77,17 @@ public:
 			return false;
 		}
 	}
-	/// Compiles the shader, and updates compileResult
+	
+	/**
+	 * Compiles the shader, and updates compileResult
+	 */
 	void compile()
 	{
 		glCompileShader(obj);
 		compileResult = CompileResult(obj);
 	}
+	
+	
 	
 	/// Returns a handle to the underlying OpenGL object
 	inline GLuint glHandle() { return obj; };

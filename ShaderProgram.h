@@ -45,6 +45,7 @@ public:
 		if(this->vsh && this->fsh)
 			this->linkAndValidate();
 	}
+	
 	/**
 	 * Destroys the object and the underlying OpenGL Program object
 	 */
@@ -52,6 +53,7 @@ public:
 	{
 		glDeleteProgram(obj);
 	}
+	
 	/**
 	 * Allows Shader Programs to be converted to bools based on their status
 	 */
@@ -68,6 +70,7 @@ public:
 		this->vsh = vsh;
 		if(this->vsh) glAttachShader(obj, this->vsh->glHandle());
 	}
+	
 	/**
 	 * Attaches the given FSH and detaches the old one
 	 */
@@ -77,6 +80,7 @@ public:
 		this->fsh = fsh;
 		if(this->fsh) glAttachShader(obj, this->fsh->glHandle());
 	}
+	
 	/**
 	 * Links and validates the shader, and updates linkResult and validateResult
 	 */

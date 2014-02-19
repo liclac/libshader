@@ -8,11 +8,18 @@
 
 
 
-#define SHADER_SYNTHESIZE_UNIFORM_ACCESSORS(_t, _s) \
-	void setUniform(const char *name, _t v0) { glUniform1##_s(uniformLocation(name), v0); }; \
-	void setUniform(const char *name, _t v0, _t v1) { glUniform2##_s(uniformLocation(name), v0, v1); }; \
-	void setUniform(const char *name, _t v0, _t v1, _t v2) { glUniform3##_s(uniformLocation(name), v0, v1, v2); }; \
-	void setUniform(const char *name, _t v0, _t v1, _t v2, _t v3) { glUniform4##_s(uniformLocation(name), v0, v1, v2, v3); };
+// Implementation macros for the setUniform(...) functions
+// SUI = Set Uniform Implementation
+#define _SUI1(_s) glUniform1##_s(uniformLocation(name), v0);
+#define _SUI2(_s) glUniform2##_s(uniformLocation(name), v0, v1);
+#define _SUI3(_s) glUniform3##_s(uniformLocation(name), v0, v1, v2);
+#define _SUI4(_s) glUniform4##_s(uniformLocation(name), v0, v1, v2, v3);
+#define _SUIV(_s) \
+	static_assert(type >= 1 && type <= 4, "Type must be in the range 1-4, corresponding to glUniform?" #_s "v"); \
+	if(type == 1) glUniform1##_s##v(uniformLocation(name), count, array); \
+	else if(type == 2) glUniform2##_s##v(uniformLocation(name), count, array); \
+	else if(type == 3) glUniform3##_s##v(uniformLocation(name), count, array); \
+	else if(type == 4) glUniform4##_s##v(uniformLocation(name), count, array);
 
 
 
@@ -121,10 +128,47 @@ public:
 	
 	
 	
-	// Synthesizes setUniform properties
-	// TODO: Do this properly!
-	SHADER_SYNTHESIZE_UNIFORM_ACCESSORS(GLfloat, f)
-	SHADER_SYNTHESIZE_UNIFORM_ACCESSORS(GLint, i)
+	/**
+	 * @name Setting Uniforms
+	 * Wrapper functions around glUniform*()
+	 */
+	/// @{
+	/**
+	 * Sets an int, ivec, bool or sampler* uniform.
+	 * @param name The name of the uniform to be set
+	 * @param v0 The value
+	 */
+	void setUniform(const char *name, GLint v0) { _SUI1(i) }
+	void setUniform(const char *name, GLint v0, GLint v1) { _SUI2(i) }
+	void setUniform(const char *name, GLint v0, GLint v1, GLint v2) { _SUI3(i) }
+	void setUniform(const char *name, GLint v0, GLint v1, GLint v2, GLint v3) { _SUI4(i) }
+	/**
+	 * Sets an int[] or ivec[] uniform.
+	 * @tparam type Which type of function should be called, as in glUniform[type]iv
+	 * @param name The name of the uniform to be set
+	 * @param count The number of values
+	 * @param array The values
+	 */
+	template<int type> void setUniform(const char *name, GLsizei count, GLint *array) { _SUIV(i) }
+	
+	/**
+	 * Sets a float or vec uniform.
+	 * @param name The name of the uniform to be set
+	 * @param v0 The value
+	 */
+	void setUniform(const char *name, GLfloat v0) { _SUI1(f) }
+	void setUniform(const char *name, GLfloat v0, GLfloat v1) { _SUI2(f) }
+	void setUniform(const char *name, GLfloat v0, GLfloat v1, GLfloat v2) { _SUI3(f) }
+	void setUniform(const char *name, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) { _SUI4(f) }
+	/**
+	 * Sets a float[] or vec[] uniform.
+	 * @tparam type Which type of function should be called, as in glUniform[type]fv
+	 * @param name The name of the uniform to be set
+	 * @param count The number of values
+	 * @param array The values
+	 */
+	template<int type> void setUniform(const char *name, GLsizei count, GLfloat *array) { _SUIV(f) }
+	/// @}
 	
 	
 	
@@ -145,5 +189,13 @@ protected:
 	FragmentShader *fsh;			///< Attached FSH
 	GLuint obj;						///< Handle to the underlying OpenGL Program object
 };
+
+
+
+// Undefine our private implementation macros; they're never needed again
+#undef _SUI1
+#undef _SUI2
+#undef _SUI3
+#undef _SUI4
 
 #endif

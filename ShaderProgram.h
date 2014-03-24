@@ -204,5 +204,6 @@ protected:
 #undef _SUI2
 #undef _SUI3
 #undef _SUI4
+#undef _SUIV
 
 #endif

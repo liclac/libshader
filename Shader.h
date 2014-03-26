@@ -90,7 +90,7 @@ public:
 	
 	
 	/// Returns a handle to the underlying OpenGL object
-	inline GLuint glHandle() { return obj; };
+	inline GLuint glHandle() const { return obj; };
 	
 	
 	

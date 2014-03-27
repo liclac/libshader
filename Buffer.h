@@ -7,15 +7,15 @@ template<GLenum target>
 class Buffer
 {
 public:
-	Buffer()
+	Buffer(const GLvoid *data = 0, GLsizeiptr size = 0, GLenum usage = GL_STATIC_DRAW)
 	{
 		glGenBuffers(1, &obj);
-	}
-	
-	Buffer(const GLvoid *data, GLsizeiptr size, GLenum usage = GL_STATIC_DRAW):
-		Buffer()
-	{
-		buffer(data, size, usage);
+		
+		if(data != 0)
+		{
+			glBindBuffer(target, obj);
+			glBufferData(target, size, data, usage);
+		}
 	}
 	
 	virtual ~Buffer()
@@ -32,7 +32,7 @@ public:
 	
 	void buffer(const GLvoid *data, GLsizeiptr size, GLenum usage = GL_STATIC_DRAW)
 	{
-		bind();
+		this->bind();
 		glBufferData(target, size, data, usage);
 	}
 	

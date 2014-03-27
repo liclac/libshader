@@ -126,6 +126,20 @@ public:
 		return pos;
 	}
 	
+	/**
+	 * Returns the location of an Attribute (cached).
+	 */
+	GLint attribLocation(const char *name)
+	{
+		std::map<const GLchar*, GLint>::iterator it = attribs.find(name);
+		if(it != attribs.end())
+			return (*it).second;
+		
+		GLint pos = glGetAttribLocation(obj, name);
+		attribs.insert(std::pair<const GLchar*, GLint>(name, pos));
+		return pos;
+	}
+	
 	
 	
 	/**
@@ -188,9 +202,8 @@ public:
 	ValidateResult validateResult;	///< The result of the last validation
 	
 protected:
-	/// Cache of uniform names and locations, so that they don't have to be
-	/// looked up again every time they're accessed. That'd get really laggy.
-	std::map<const GLchar*, GLint> uniforms;
+	std::map<const GLchar*, GLint> uniforms;	///< Cache of uniform names and locations.
+	std::map<const GLchar*, GLint> attribs;		///< Cache of attrib names and locations.
 	
 	VertexShader *vsh;				///< Attached VSH
 	FragmentShader *fsh;			///< Attached FSH

@@ -12,6 +12,12 @@ public:
 		glGenBuffers(1, &obj);
 	}
 	
+	Buffer(const GLvoid *data, GLsizeiptr size, GLenum usage = GL_STATIC_DRAW):
+		Buffer()
+	{
+		buffer(data, size, usage);
+	}
+	
 	virtual ~Buffer()
 	{
 		glDeleteBuffers(1, &obj);

@@ -129,9 +129,9 @@ public:
 	/**
 	 * Returns the index of an Attribute (cached).
 	 */
-	GLuint attribIndex(const char *name)
+	GLint attribIndex(const char *name)
 	{
-		std::map<const GLchar*, GLuint>::iterator it = attribs.find(name);
+		std::map<const GLchar*, GLint>::iterator it = attribs.find(name);
 		if(it != attribs.end())
 			return (*it).second;
 		
@@ -203,7 +203,7 @@ public:
 	
 protected:
 	std::map<const GLchar*, GLint> uniforms;	///< Cache of uniform names and locations.
-	std::map<const GLchar*, GLuint> attribs;	///< Cache of attrib names and indices.
+	std::map<const GLchar*, GLint> attribs;		///< Cache of attrib names and indices.
 	
 	VertexShader *vsh;				///< Attached VSH
 	FragmentShader *fsh;			///< Attached FSH

@@ -2,32 +2,44 @@
 #define BUFFER_H
 
 #include "libshader_p.h"
+#include <memory>
 
 template<GLenum target>
 class Buffer
 {
-public:
-	Buffer(const GLvoid *data = 0, GLsizeiptr size = 0, GLenum usage = GL_STATIC_DRAW)
+protected:
+	struct Impl
 	{
-		glGenBuffers(1, &obj);
+		GLuint obj;
+	};
+	
+	
+	
+public:
+	Buffer(const GLvoid *data = 0, GLsizeiptr size = 0, GLenum usage = GL_STATIC_DRAW):
+		p(new Impl)
+	{
+		glGenBuffers(1, &p->obj);
 		
 		if(data != 0)
 		{
-			glBindBuffer(target, obj);
+			glBindBuffer(target, p->obj);
 			glBufferData(target, size, data, usage);
 		}
 	}
 	
 	virtual ~Buffer()
 	{
-		glDeleteBuffers(1, &obj);
+		glDeleteBuffers(1, &p->obj);
 	}
+	
+	inline operator GLuint() const { return p->obj; };
 	
 	
 	
 	void bind()
 	{
-		glBindBuffer(target, obj);
+		glBindBuffer(target, p->obj);
 	}
 	
 	void buffer(const GLvoid *data, GLsizeiptr size, GLenum usage = GL_STATIC_DRAW)
@@ -38,18 +50,13 @@ public:
 	
 	
 	
-	/// Returns a handle to the underlying OpenGL object
-	inline GLuint glHandle() const { return obj; };
-	
-	
-	
 	static void unbind()
 	{
 		glBindBuffer(target, 0);
 	}
 	
 protected:
-	GLuint obj;
+	std::shared_ptr<Impl> p;
 };
 
 typedef Buffer<GL_ARRAY_BUFFER> ArrayBuffer;

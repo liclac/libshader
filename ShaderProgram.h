@@ -1,8 +1,9 @@
 #ifndef SHADERPROGRAM_H
 #define SHADERPROGRAM_H
 
-#include <map>
 #include "libshader_p.h"
+#include <map>
+#include <memory>
 #include "Result.h"
 #include "Shader.h"
 
@@ -36,20 +37,36 @@ public:
 	
 	
 	
+protected:
+	struct Impl
+	{
+		LinkResult linkResult;			///< The result of the last linking
+		ValidateResult validateResult;	///< The result of the last validation
+		
+		std::map<const GLchar*, GLint> uniforms;	///< Cache of uniform names and locations.
+		std::map<const GLchar*, GLint> attribs;		///< Cache of attrib names and indices.
+		
+		VertexShader vsh;				///< Attached VSH
+		FragmentShader fsh;				///< Attached FSH
+		GLuint obj;						///< Handle to the underlying OpenGL Program object
+	};
+	
+	
+	
+public:
 	/**
 	 * Initializes a shader program from the given Vertex and Fragment shader.
 	 * @param vsh The VSH to use, or 0 for none
 	 * @param fsh The FSH to use, or 0 for none
 	 */
-	ShaderProgram(VertexShader *vsh = 0, FragmentShader *fsh = 0):
-		vsh(0), fsh(0)
+	ShaderProgram(VertexShader vsh = VertexShader(), FragmentShader fsh = FragmentShader())
 	{
-		obj = glCreateProgram();
+		p->obj = glCreateProgram();
 		
-		if(vsh) this->setVertexShader(vsh);
-		if(fsh) this->setFragmentShader(fsh);
+		if(vsh) this->setVertexShader(p->vsh);
+		if(fsh) this->setFragmentShader(p->fsh);
 		
-		if(this->vsh && this->fsh)
+		if(p->vsh && p->fsh)
 			this->linkAndValidate();
 	}
 	
@@ -58,34 +75,39 @@ public:
 	 */
 	virtual ~ShaderProgram()
 	{
-		glDeleteProgram(obj);
+		glDeleteProgram(p->obj);
 	}
+	
+	/**
+	 * Allows the program to be treated as an OpenGL Object handle
+	 */
+	inline operator GLuint() const { return p->obj; }
 	
 	/**
 	 * Allows Shader Programs to be converted to bools based on their status
 	 */
-	explicit operator bool() const { return obj && linkResult && validateResult; }
+	explicit operator bool() const { return p->obj && p->linkResult && p->validateResult; }
 	
 	
 	
 	/**
 	 * Attaches the given VSH and detaches the old one
 	 */
-	void setVertexShader(VertexShader *vsh)
+	void setVertexShader(VertexShader vsh)
 	{
-		if(this->vsh) glDetachShader(obj, this->vsh->glHandle());
-		this->vsh = vsh;
-		if(this->vsh) glAttachShader(obj, this->vsh->glHandle());
+		if(p->vsh) glDetachShader(p->obj, p->vsh);
+		p->vsh = vsh;
+		if(p->vsh) glAttachShader(p->obj, p->vsh);
 	}
 	
 	/**
 	 * Attaches the given FSH and detaches the old one
 	 */
-	void setFragmentShader(FragmentShader *fsh)
+	void setFragmentShader(FragmentShader fsh)
 	{
-		if(this->fsh) glDetachShader(obj, this->fsh->glHandle());
-		this->fsh = fsh;
-		if(this->fsh) glAttachShader(obj, this->fsh->glHandle());
+		if(p->fsh) glDetachShader(p->obj, p->fsh);
+		p->fsh = fsh;
+		if(p->fsh) glAttachShader(p->obj, p->fsh);
 	}
 	
 	/**
@@ -93,11 +115,11 @@ public:
 	 */
 	void linkAndValidate()
 	{
-		glLinkProgram(obj);
-		linkResult = LinkResult(obj);
+		glLinkProgram(p->obj);
+		p->linkResult = LinkResult(p->obj);
 		
-		glValidateProgram(obj);
-		validateResult = ValidateResult(obj);
+		glValidateProgram(p->obj);
+		p->validateResult = ValidateResult(p->obj);
 	}
 	
 	
@@ -107,7 +129,7 @@ public:
 	 */
 	void use()
 	{
-		glUseProgram(obj);
+		glUseProgram(p->obj);
 	}
 	
 	
@@ -117,12 +139,12 @@ public:
 	 */
 	GLint uniformLocation(const char *name)
 	{
-		std::map<const GLchar*, GLint>::iterator it = uniforms.find(name);
-		if(it != uniforms.end())
+		std::map<const GLchar*, GLint>::iterator it = p->uniforms.find(name);
+		if(it != p->uniforms.end())
 			return (*it).second;
 		
-		GLint pos = glGetUniformLocation(obj, name);
-		uniforms.insert(std::pair<const GLchar*, GLint>(name, pos));
+		GLint pos = glGetUniformLocation(p->obj, name);
+		p->uniforms.insert(std::pair<const GLchar*, GLint>(name, pos));
 		return pos;
 	}
 	
@@ -131,12 +153,12 @@ public:
 	 */
 	GLint attribIndex(const char *name)
 	{
-		std::map<const GLchar*, GLint>::iterator it = attribs.find(name);
-		if(it != attribs.end())
+		std::map<const GLchar*, GLint>::iterator it = p->attribs.find(name);
+		if(it != p->attribs.end())
 			return (*it).second;
 		
-		GLint pos = glGetAttribLocation(obj, name);
-		attribs.insert(std::pair<const GLchar*, GLint>(name, pos));
+		GLint pos = glGetAttribLocation(p->obj, name);
+		p->attribs.insert(std::pair<const GLchar*, GLint>(name, pos));
 		return pos;
 	}
 	
@@ -192,22 +214,14 @@ public:
 	/// @}
 	
 	
+	/// The result of the last Link operation
+	inline const LinkResult linkResult() { return p->linkResult; }
 	
-	/// Returns a handle to the underlying OpenGL object
-	inline GLuint glHandle() const { return obj; }
-	
-	
-	
-	LinkResult linkResult;			///< The result of the last linking
-	ValidateResult validateResult;	///< The result of the last validation
+	/// The result of the last Compile operation
+	inline const ValidateResult validateResult() { return p->validateResult; }
 	
 protected:
-	std::map<const GLchar*, GLint> uniforms;	///< Cache of uniform names and locations.
-	std::map<const GLchar*, GLint> attribs;		///< Cache of attrib names and indices.
-	
-	VertexShader *vsh;				///< Attached VSH
-	FragmentShader *fsh;			///< Attached FSH
-	GLuint obj;						///< Handle to the underlying OpenGL Program object
+	std::shared_ptr<Impl> p;
 };
 
 

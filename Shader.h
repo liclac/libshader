@@ -1,9 +1,10 @@
 #ifndef SHADER_H
 #define SHADER_H
 
+#include "libshader_p.h"
 #include <string>
 #include <fstream>
-#include "libshader_p.h"
+#include <memory>
 #include "Result.h"
 
 /**
@@ -21,13 +22,24 @@ public:
 	
 	
 	
+protected:
+	struct Impl
+	{
+		GLuint obj;
+		CompileResult compileResult;
+	};
+	
+	
+	
+public:
 	/**
 	 * Initializes a shader tries to source it with the file at the given path.
 	 * @param path Path of the source file to be loaded
 	 */
-	Shader(const std::string& path = "")
+	Shader(const std::string& path = ""):
+		p(new Impl)
 	{
-		obj = glCreateShader(type);
+		p->obj = glCreateShader(type);
 		
 		if(path.size() > 0)
 			if(this->loadSourceFile(path))
@@ -39,13 +51,18 @@ public:
 	 */
 	virtual ~Shader()
 	{
-		glDeleteShader(obj);
+		glDeleteShader(p->obj);
 	}
+	
+	/**
+	 * Allows the shader to be treated as an OpenGL Object handle
+	 */
+	inline operator GLuint() const { return p->obj; };
 	
 	/**
 	 * Allows Shaders to be converted to bools based on their status
 	 */
-	explicit operator bool() const { return obj && compileResult; }
+	explicit operator bool() const { return p->obj && p->compileResult; }
 	
 	
 	
@@ -66,7 +83,7 @@ public:
 			GLchar *buffer = new GLchar[length+1];
 			file.read(buffer, length);
 			
-			glShaderSource(obj, 1, &buffer, &length);
+			glShaderSource(p->obj, 1, &buffer, &length);
 			
 			delete[] buffer;
 			return true;
@@ -83,21 +100,19 @@ public:
 	 */
 	void compile()
 	{
-		glCompileShader(obj);
-		compileResult = CompileResult(obj);
+		glCompileShader(p->obj);
+		p->compileResult = CompileResult(p->obj);
 	}
 	
 	
 	
-	/// Returns a handle to the underlying OpenGL object
-	inline GLuint glHandle() const { return obj; };
-	
-	
-	
-	CompileResult compileResult;	///< The result of the last compilation
+	/**
+	 * The status of the last compilaton
+	 */
+	inline const CompileResult compileResult() const { return p->compileResult; }
 	
 protected:
-	GLuint obj;						///< Handle to the underlying OpenGL Program object
+	std::shared_ptr<Impl> p;
 };
 
 /// Predefined type for VSHs (a Shader with type GL_VERTEX_SHADER)

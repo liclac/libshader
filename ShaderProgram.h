@@ -59,7 +59,8 @@ public:
 	 * @param vsh The VSH to use, or 0 for none
 	 * @param fsh The FSH to use, or 0 for none
 	 */
-	ShaderProgram(VertexShader vsh = VertexShader(), FragmentShader fsh = FragmentShader())
+	ShaderProgram(VertexShader vsh = VertexShader(), FragmentShader fsh = FragmentShader()):
+		p(std::make_shared<Impl>())
 	{
 		p->obj = glCreateProgram();
 		
